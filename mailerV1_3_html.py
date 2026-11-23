@@ -68,12 +68,11 @@ def build_message(
     msg["To"]      = recipient_email
 
     # ── Anti-spam headers ─────────────────────────────────────────────────────
-    # Signals this is a one-to-one transactional email, not a bulk blast
+    # Marks this honestly as a bulk newsletter (expected by Gmail/Yahoo)
     msg["Precedence"]                  = "bulk"
     msg["X-Mailer"]                    = "Python/smtplib"
-    # List-Unsubscribe helps deliverability with major providers
+    # Mailto unsubscribe: clients email the sender, who removes the address by hand
     msg["List-Unsubscribe"]            = f"<mailto:{sender_email}?subject=Unsubscribe>"
-    msg["List-Unsubscribe-Post"]       = "List-Unsubscribe=One-Click"
 
     if is_html:
         plain_body = html_to_plaintext(body)
