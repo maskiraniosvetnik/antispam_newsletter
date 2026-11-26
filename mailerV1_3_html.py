@@ -24,12 +24,19 @@ def load_recipients(filepath: str) -> list[tuple[str, str]]:
                 line = line.strip()
                 if not line or line.startswith("#"):
                     continue
-                if ":" not in line:
+                if ":" in line:
+                    name, _, email = line.partition(":")
+                elif "@" in line:
+                    # Bare address with no username
+                    name, email = "", line
+                else:
                     print(f"  [!] Line {line_num} skipped (invalid format): '{line}'")
                     continue
-                name, _, email = line.partition(":")
                 name = name.strip()
                 email = email.strip()
+                # No username (empty or "none") → use the part before @
+                if (not name or name.lower() == "none") and "@" in email:
+                    name = email.split("@", 1)[0]
                 if name and email:
                     recipients.append((name, email))
                 else:
